@@ -14,6 +14,8 @@
 Установить по отдельности:
 pip install pygame==2.1.2
 pip install PyOpenGL==3.1.6
+pip install setuptools==65.3.0
+pip install wheel==0.37.1
 
 Или из requirements.txt:
 pip install -r requirements.txt
