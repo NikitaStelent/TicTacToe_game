@@ -3,174 +3,48 @@ from settings.constants import INF
 
 
 def bot_move(game_field, player):
-    if game_field[1][1] == INF:
-        game_field[1][1] = player
-        return
-
-    if game_field[0][2] == 0 and game_field[1][1] == 0 and game_field[2][2] == 1 and game_field[2][1] == 1:
-        if game_field[2][0] == INF:
-            game_field[2][0] = player
-            return
-
-    if game_field[0][0] == 0 and game_field[0][2] == 0:
-        if game_field[0][1] == INF:
-            game_field[0][1] = player
-            return
-
-    if game_field[0][2] == 0 and game_field[1][1] == 0:
-        if game_field[2][1] == INF:
-            game_field[2][1] = player
-            return
-
-    if game_field[1][0] == 0 and game_field[1][1] == 0 and game_field[1][2] == INF:
-        game_field[1][2] = player
-        return
-
-    if game_field[0][1] == 1 or game_field[1][0] == 1 or game_field[1][2] == 1 or game_field[2][1] == 1:
-        if game_field[0][0] == 0 and game_field[1][1] == 0:
-            if game_field[2][2] == INF:
-                game_field[2][2] = player
-                return
-        else:
-            if game_field[0][0] == INF:
-                game_field[0][0] = player
-                return
-
-        if game_field[2][2] == 0 and game_field[1][1] == 0:
-            if game_field[0][0] == INF:
-                game_field[0][0] = player
-                return
-            else:
-                if game_field[2][2] == INF:
-                    game_field[2][2] = player
+    # Проверяем, есть ли у бота выигрышная комбинация
+    for row in range(3):
+        for col in range(3):
+            if game_field[row][col] == INF:
+                game_field[row][col] = player
+                if bot_wins(game_field, player):
                     return
+                game_field[row][col] = INF
 
-        if game_field[0][2] == 0 and game_field[1][1] == 0:
-            if game_field[2][0] == INF:
-                game_field[2][0] = player
-                return
+    # Проверяем, может ли бот заблокировать выигрыш соперника
+    for row in range(3):
+        for col in range(3):
+            if game_field[row][col] == INF:
+                game_field[row][col] = player
+                if bot_wins(game_field, not player):
+                    return
+                game_field[row][col] = INF
 
-        if game_field[2][0] == 0 and game_field[1][1] == 0:
-            if game_field[0][2] == INF:
-                game_field[0][2] = player
-                return
+    # Если у бота нет выигрышной комбинации и он не может заблокировать выигрыш соперника,
+    # бот делает случайный ход
+    y, x = randint(0, 2), randint(0, 2)
+    while game_field[y][x] != INF:
+        y, x = randint(0, 2), randint(0, 2)
 
-        if game_field[0][1] == 0 and game_field[1][1] == 0:
-            if game_field[1][2] == INF:
-                game_field[1][2] = player
-                return
+    game_field[y][x] = player
 
-        if game_field[1][2] == 0 and game_field[1][1] == 0:
-            if game_field[1][0] == INF:
-                game_field[1][0] = player
-                return
 
-        if game_field[0][1] == 0 and game_field[1][1] == 0:
-            if game_field[2][1] == INF:
-                game_field[2][1] = player
-                return
+def bot_wins(game_field, player):
+    """ Проверяет, выиграл ли игрок с заданным знаком. """
 
-        if game_field[2][1] == 0 and game_field[1][1] == 0:
-            if game_field[0][1] == INF:
-                game_field[0][1] = player
-                return
+    for i in range(3):
+        if game_field[i][0] == game_field[i][1] == game_field[i][2] == player:
+            return True
 
-    if game_field[0][0] == 1 or game_field[0][2] == 1 or game_field[2][0] == 1 or game_field[2][2] == 1:
-        if game_field[0][0] == 1:
-            if game_field[0][1] == 1 and game_field[0][2] == INF:
-                game_field[0][2] = player
-                return
-            elif game_field[1][0] == 1 and game_field[2][0] == INF:
-                game_field[2][0] = player
-                return
+    for j in range(3):
+        if game_field[0][j] == game_field[1][j] == game_field[2][j] == player:
+            return True
 
-        if game_field[0][2] == 1:
-            if game_field[0][1] == 1 and game_field[0][0] == INF:
-                game_field[0][0] = player
-                return
-            elif game_field[1][2] == 1 and game_field[2][2] == INF:
-                game_field[2][2] = player
-                return
+    if game_field[0][0] == game_field[1][1] == game_field[2][2] == player:
+        return True
 
-        if game_field[2][0] == 1:
-            if game_field[1][0] == 1 and game_field[0][0] == INF:
-                game_field[0][0] = player
-                return
-            elif game_field[2][1] == 1 and game_field[2][2] == INF:
-                game_field[2][2] = player
-                return
+    if game_field[0][2] == game_field[1][1] == game_field[2][0] == player:
+        return True
 
-        if game_field[0][0] == 1:
-            if game_field[2][0] == 1 and game_field[1][0] == INF:
-                game_field[1][0] = player
-                return
-
-        if game_field[1][2] == 0 and game_field[1][1] == 0:
-            if game_field[1][0] == INF:
-                game_field[1][0] = player
-                return
-
-        if game_field[0][0] == 1:
-            if game_field[0][2] == 1 and game_field[0][1] == INF:
-                game_field[0][1] = player
-                return
-
-        if game_field[0][2] == 1:
-            if game_field[2][2] == 1 and game_field[1][2] == INF:
-                game_field[1][2] = player
-                return
-
-        if game_field[2][2] == 1:
-            if game_field[2][0] == 1 and game_field[2][1] == INF:
-                game_field[2][1] = player
-                return
-
-        if game_field[0][2] == 1:
-            if game_field[1][2] == INF:
-                game_field[1][2] = player
-                return
-            elif game_field[0][1] == INF:
-                game_field[0][1] = player
-                return
-
-        if game_field[2][0] == 1:
-            if game_field[1][0] == INF:
-                game_field[1][0] = player
-                return
-            elif game_field[2][1] == INF:
-                game_field[2][1] = player
-                return
-
-        if game_field[0][0] == 1:
-            if game_field[1][0] == INF:
-                game_field[1][0] = player
-                return
-            elif game_field[0][1] == INF:
-                game_field[0][1] = player
-                return
-
-        if game_field[0][0] == 1:
-            if game_field[1][0] == INF:
-                game_field[1][0] = player
-                return
-            elif game_field[0][1] == INF:
-                game_field[0][1] = player
-                return
-
-    if game_field[0][2] == INF:
-        game_field[0][2] = player
-        return
-    if game_field[2][0] == INF:
-        game_field[2][0] = player
-        return
-    if game_field[2][2] == INF:
-        game_field[2][2] = player
-        return
-
-    else:
-        go_random = True
-        while go_random:
-            y, x = randint(0, 2), randint(0, 2)
-            if game_field[y][x] == INF:
-                game_field[y][x] = player
-                go_random = False
+    return False

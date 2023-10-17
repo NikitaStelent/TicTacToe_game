@@ -7,6 +7,7 @@ from core.bot_logic import bot_move
 
 class TicTacToe:
     def __init__(self, game):
+        self.winner_line = None
         self.game = game
         self.field_image = get_image(path='resources/field.png', res=[WIN_SIZE] * 2)
         self.O_image = get_image(path='resources/o.png', res=[CELL_SIZE] * 2)
